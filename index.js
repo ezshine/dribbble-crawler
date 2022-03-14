@@ -97,7 +97,10 @@ async function requestDribbblePage(q,page,total){
 		}
 
 		console.log(postObj);
-		await postToUniCloud(postObj);
+		if(postObj["cover"])await postToUniCloud(postObj);
+		else{
+			console.log("有点问题，本条不提交！");
+		}
 
 		console.log("第"+(i+1)+"条数据处理结束");
 	}
