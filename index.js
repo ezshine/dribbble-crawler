@@ -111,7 +111,7 @@ function getTimeoutSignal(){
 	const signal = controller.signal;
 	setTimeout(() => { 
 		controller.abort()
-	}, 10000);
+	}, 60000);
 
 	return signal;
 }
@@ -161,7 +161,8 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	var res;
 	var urlpath;
 	var fileID;
-	try{
+
+	async function step1(){
 		res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
 			method: 'POST', 
 			body: fd ,
@@ -172,15 +173,20 @@ async function uploadToUniCloud(filepath,filename,shotid){
 		urlpath = resData.fileList[0].download_url;
 		fileID = resData.fileList[0].fileID;
 		console.log(resData);
+	}
+	try{
+		await step1();
 	}catch(err){
-		return "need retry upload";
+		await step1();
+		console.log(err);
+		return "";
 	}
 	
 	//step2. 提交至阿里云云存储
 	//https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble
 	console.log("step2. 提交至阿里云云存储");
 	var fileurl;
-	try{
+	async function step2(){
 		res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
 			method: 'POST', 
 			body: JSON.stringify({
@@ -195,7 +201,12 @@ async function uploadToUniCloud(filepath,filename,shotid){
 		console.log(resData);
 
 		fileurl = resData.data;
+	}
+	try{
+		await step2();
 	}catch(err){
+		console.log(err);
+		await step2();
 		return "need retry upload";
 	}
 
@@ -205,7 +216,7 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	fd.append('action', "delete");
 	fd.append('fileID', fileID);
 
-	try{
+	async function step3(){
 		res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
 			method: 'POST', 
 			body: fd ,
@@ -214,8 +225,13 @@ async function uploadToUniCloud(filepath,filename,shotid){
 		var resData = await res.json();
 
 		console.log(resData);
+	}
+
+	try{
+		step3();
 	}catch(err){
 		console.log(err);
+		step3();
 	}
 
 	return fileurl;
