@@ -107,6 +107,7 @@ async function requestDribbblePage(q,page,total){
 	}
 }
 async function postToUniCloud(obj){
+	console.log("将数据提交至阿里云dribbble集合");
 	var res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
 		method: 'POST', 
 		body: JSON.stringify({
@@ -116,7 +117,7 @@ async function postToUniCloud(obj){
 	});
 	var resData = await res.json();
 
-	console.log(res);
+	console.log(resData);
 }
 async function uploadToUniCloud(filepath,filename,shotid){
 	console.log(filepath);
@@ -169,6 +170,7 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	var fileurl = resData.data;
 
 	//step3. 删除腾讯云云存储
+	console.log("step3. 从腾讯云云存储删除");
 	var fd = new FormData();
 	fd.append('action', "delete");
 	fd.append('fileID', fileID);
