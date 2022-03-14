@@ -166,22 +166,25 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	var fileID;
 
 	async function step1(){
-		res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
-			method: 'POST', 
-			body: fd ,
-			signal:getTimeoutSignal()
-		});
-		var resData = await res.json();
+		try{
+			res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
+				method: 'POST', 
+				body: fd ,
+				signal:getTimeoutSignal()
+			});
+			var resData = await res.json();
 
-		urlpath = resData.fileList[0].download_url;
-		fileID = resData.fileList[0].fileID;
-		console.log(resData);
+			urlpath = resData.fileList[0].download_url;
+			fileID = resData.fileList[0].fileID;
+			console.log(resData);
+		}catch(err){
+			console.log(err);
+		}
 	}
 	try{
 		await step1();
 	}catch(err){
 		await step1();
-		console.log(err);
 		return "";
 	}
 	
@@ -190,27 +193,30 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	console.log("step2. 提交至阿里云云存储");
 	var fileurl;
 	async function step2(){
-		res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
-			method: 'POST', 
-			body: JSON.stringify({
-				action:"transfer",
-				shotid:shotid,
-				filename:file.name,
-				url:urlpath
-			}),
-			signal:getTimeoutSignal()
-		});
-		var resData = await res.json();
-		console.log(resData);
+		try{
+			res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
+				method: 'POST', 
+				body: JSON.stringify({
+					action:"transfer",
+					shotid:shotid,
+					filename:file.name,
+					url:urlpath
+				}),
+				signal:getTimeoutSignal()
+			});
+			var resData = await res.json();
+			console.log(resData);
 
-		fileurl = resData.data;
+			fileurl = resData.data;
+		}catch(err){
+			console.log(err);
+		}
 	}
 	try{
 		await step2();
 	}catch(err){
-		console.log(err);
 		await step2();
-		return "need retry upload";
+		return "";
 	}
 
 	//step3. 删除腾讯云云存储
@@ -220,20 +226,23 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	fd.append('fileID', fileID);
 
 	async function step3(){
-		res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
-			method: 'POST', 
-			body: fd ,
-			signal:getTimeoutSignal()
-		});
-		var resData = await res.json();
+		try{
+			res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
+				method: 'POST', 
+				body: fd ,
+				signal:getTimeoutSignal()
+			});
+			var resData = await res.json();
 
-		console.log(resData);
+			console.log(resData);
+		}catch(err){
+			console.log(err);
+		}
 	}
 
 	try{
 		step3();
 	}catch(err){
-		console.log(err);
 		step3();
 	}
 
