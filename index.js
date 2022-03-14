@@ -256,8 +256,11 @@ async function parseDetail(id){
 		var shotItem = allShots[i];
 		var picurl = $(shotItem).find("img").attr("data-animated-url");
 		var filename = id+"_"+(i+1)+".jpg";
-		picurl = await uploadToUniCloud(picurl+"?compress="+imgcompress+"&resize="+imgsize,filename,id);
-		if(picurl)pics.push(picurl);
+		
+		if(picurl){
+			picurl = await uploadToUniCloud(picurl+"?compress="+imgcompress+"&resize="+imgsize,filename,id);
+			if(picurl)pics.push(picurl);
+		}
 	}
 
 	return pics;
