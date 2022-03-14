@@ -58,6 +58,7 @@ async function requestDribbblePage(q,page,total){
 
 		postObj["title"]=title;
 		postObj["shotid"]=shotId;
+		postObj["author"]=author;
 
 		var extraHtml = $(shotItem).children(".js-thumbnail-base").children(".shot-thumbnail-extras").html().trim();
 		var hasExtra = extraHtml!="";
