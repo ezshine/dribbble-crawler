@@ -117,20 +117,24 @@ function getTimeoutSignal(){
 }
 async function postToUniCloud(obj){
 	console.log("将数据提交至阿里云dribbble集合");
-	var res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
-		method: 'POST', 
-		body: JSON.stringify({
-			...obj,
-			action:"add"
-		}),
-		signal:getTimeoutSignal()
-	});
-	var resData = await res.json();
+	var res 
+	
+	try{
+		res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
+			method: 'POST', 
+			body: JSON.stringify({
+				...obj,
+				action:"add"
+			}),
+			signal:getTimeoutSignal()
+		});
+		var resData = await res.json();
 
-	console.log(resData);
+		console.log(resData);
+	}catch(err){}
 }
 async function uploadToUniCloud(filepath,filename,shotid){
-	console.log(filepath);
+	console.log(filepath,filename,shotid);
 	if(isDebug){
 		console.log("Debug 模式不执行上传");
 		return filepath;
@@ -154,35 +158,46 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	}
 	fd.append('file', file);
 
-	var res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
-		method: 'POST', 
-		body: fd ,
-		signal:getTimeoutSignal()
-	});
-	var resData = await res.json();
+	var res;
+	var urlpath;
+	var fileID;
+	try{
+		res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
+			method: 'POST', 
+			body: fd ,
+			signal:getTimeoutSignal()
+		});
+		var resData = await res.json();
 
-	console.log(resData);
-
-	var urlpath = resData.fileList[0].download_url;
-	var fileID = resData.fileList[0].fileID;
+		urlpath = resData.fileList[0].download_url;
+		fileID = resData.fileList[0].fileID;
+		console.log(resData);
+	}catch(err){
+		return "need retry upload";
+	}
 	
 	//step2. 提交至阿里云云存储
 	//https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble
 	console.log("step2. 提交至阿里云云存储");
-	var res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
-		method: 'POST', 
-		body: JSON.stringify({
-			action:"transfer",
-			shotid:shotid,
-			filename:file.name,
-			url:urlpath
-		}),
-		signal:getTimeoutSignal()
-	});
-	var resData = await res.json();
-	console.log(resData);
+	var fileurl;
+	try{
+		res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
+			method: 'POST', 
+			body: JSON.stringify({
+				action:"transfer",
+				shotid:shotid,
+				filename:file.name,
+				url:urlpath
+			}),
+			signal:getTimeoutSignal()
+		});
+		var resData = await res.json();
+		console.log(resData);
 
-	var fileurl = resData.data;
+		fileurl = resData.data;
+	}catch(err){
+		return "need retry upload";
+	}
 
 	//step3. 删除腾讯云云存储
 	console.log("step3. 从腾讯云云存储删除");
@@ -190,19 +205,24 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	fd.append('action', "delete");
 	fd.append('fileID', fileID);
 
-	var res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
-		method: 'POST', 
-		body: fd ,
-		signal:getTimeoutSignal()
-	});
-	var resData = await res.json();
+	try{
+		res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
+			method: 'POST', 
+			body: fd ,
+			signal:getTimeoutSignal()
+		});
+		var resData = await res.json();
 
-	console.log(resData);
+		console.log(resData);
+	}catch(err){
+		console.log(err);
+	}
 
 	return fileurl;
 }
 async function parseDetail(id){
 	//https://dribbble.com/shots/17305604
+	console.log("parseDetail:"+id);
 
 	const res = await got("https://dribbble.com/shots/"+id).text();
 
@@ -217,7 +237,7 @@ async function parseDetail(id){
 		var shotItem = allShots[i];
 		var picurl = $(shotItem).find("img").attr("data-animated-url");
 		var filename = id+"_"+(i+1)+".jpg";
-		picurl = await uploadToUniCloud(picurl+"?compress="+imgcompress+"&resize="+imgsize,"images/"+id+"_"+(i+1)+".jpg",filename,id);
+		picurl = await uploadToUniCloud(picurl+"?compress="+imgcompress+"&resize="+imgsize,filename,id);
 		if(picurl)pics.push(picurl);
 	}
 
