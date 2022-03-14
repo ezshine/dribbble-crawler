@@ -93,7 +93,7 @@ async function requestDribbblePage(q,page,total){
 
 			if(mode==="video")await download(videourl,shotId+"_1.mp4");
 
-			postObj["cover"]=videourl;
+			postObj["video"]=videourl;
 		}
 
 		console.log(postObj);
