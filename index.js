@@ -24,7 +24,7 @@ if(!fs.existsSync("images")){
 async function requestDribbblePage(q,page,total){
 	//每页最多就24条
 	console.log("准备爬取第"+page+"页数据");
-	//https://dribbble.com/search/shots/popular?timeframe=now&q=logo&page=2&per_page=24&exclude_shot_ids=%2C17657041%2C17654125%2C17666947%2C17208391%2C17659035%2C17669103%2C17686941%2C17690288%2C17677880%2C17672150%2C17677896%2C17677927%2C17669870%2C17695671%2C17681301%2C17656204%2C17685682%2C17658944%2C17667344%2C17695789%2C17697669%2C17678001%2C17677814%2C17689214&timeframe=week
+	//https://dribbble.com/search/shots/popular?timeframe=week&q=logo&page=2&per_page=24&exclude_shot_ids=%2C17657041%2C17654125%2C17666947%2C17208391%2C17659035%2C17669103%2C17686941%2C17690288%2C17677880%2C17672150%2C17677896%2C17677927%2C17669870%2C17695671%2C17681301%2C17656204%2C17685682%2C17658944%2C17667344%2C17695789%2C17697669%2C17678001%2C17677814%2C17689214&timeframe=week
 	let res;
 	try{
 		res = await got("https://dribbble.com/search/shots/popular?timeframe=now&q="+q+"&page="+page+"&per_page=24").text();
