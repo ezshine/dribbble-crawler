@@ -106,6 +106,15 @@ async function requestDribbblePage(q,page,total){
 		requestDribbblePage(q,page+1,total);
 	}
 }
+function getTimeoutSignal(){
+	const controller = new AbortController();
+	const signal = controller.signal;
+	setTimeout(() => { 
+		controller.abort()
+	}, 10000);
+
+	return signal;
+}
 async function postToUniCloud(obj){
 	console.log("将数据提交至阿里云dribbble集合");
 	var res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
@@ -113,7 +122,8 @@ async function postToUniCloud(obj){
 		body: JSON.stringify({
 			...obj,
 			action:"add"
-		})
+		}),
+		signal:getTimeoutSignal()
 	});
 	var resData = await res.json();
 
@@ -144,7 +154,11 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	}
 	fd.append('file', file);
 
-	var res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { method: 'POST', body: fd });
+	var res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
+		method: 'POST', 
+		body: fd ,
+		signal:getTimeoutSignal()
+	});
 	var resData = await res.json();
 
 	console.log(resData);
@@ -162,7 +176,8 @@ async function uploadToUniCloud(filepath,filename,shotid){
 			shotid:shotid,
 			filename:file.name,
 			url:urlpath
-		})
+		}),
+		signal:getTimeoutSignal()
 	});
 	var resData = await res.json();
 	console.log(resData);
@@ -175,7 +190,11 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	fd.append('action', "delete");
 	fd.append('fileID', fileID);
 
-	var res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { method: 'POST', body: fd });
+	var res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
+		method: 'POST', 
+		body: fd ,
+		signal:getTimeoutSignal()
+	});
 	var resData = await res.json();
 
 	console.log(resData);
