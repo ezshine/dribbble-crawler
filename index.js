@@ -15,7 +15,7 @@ console.log("mode:"+mode);
 
 const imgcompress = 1;
 const imgsize = "840x630";
-const isDebug = true;
+const isDebug = false;
 
 if(!fs.existsSync("images")){
 	fs.mkdirSync("images");
@@ -121,6 +121,10 @@ function getTimeoutSignal(){
 }
 async function postToUniCloud(obj){
 	console.log("将数据提交至阿里云dribbble集合");
+	if(isDebug){
+		console.log("Debug 模式不执行提交");
+		return;
+	}
 	var res 
 	
 	try{
