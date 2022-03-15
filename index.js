@@ -309,5 +309,5 @@ async function download(url, fileName){
 }
 
 
-requestDribbblePage(querytype,1,2);
+requestDribbblePage(querytype,1,3);
 
