@@ -7,7 +7,7 @@ import { fileFromSync } from 'fetch-blob/from.js'
 import { FormData } from 'formdata-polyfill/esm.min.js'
 
 var [querytype,mode] = process.argv.slice(2);
-if(!querytype)querytype="app";
+if(!querytype)querytype="mobile";
 if(!mode)mode="normal";
 
 console.log("querytype:"+querytype);
@@ -309,5 +309,5 @@ async function download(url, fileName){
 }
 
 
-requestDribbblePage(querytype,1,3);
+requestDribbblePage(querytype,1,2);
 
