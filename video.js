@@ -6,7 +6,7 @@ import File from 'fetch-blob/file.js'
 import { fileFromSync } from 'fetch-blob/from.js'
 import { FormData } from 'formdata-polyfill/esm.min.js'
 
-querytype="app";
+const querytype="mobile";
 
 const imgcompress = 1;
 const imgsize = "840x630";
@@ -16,7 +16,7 @@ if(!fs.existsSync("images")){
 	fs.mkdirSync("images");
 }
 
-async function requestDribbblePage(q,page,total){
+async function requestDribbblePage(q,page){
 	//每页最多就24条
 	console.log("准备爬取第"+page+"页数据");
 	//https://dribbble.com/search/shots/popular?timeframe=week&q=logo&page=2&per_page=24&exclude_shot_ids=%2C17657041%2C17654125%2C17666947%2C17208391%2C17659035%2C17669103%2C17686941%2C17690288%2C17677880%2C17672150%2C17677896%2C17677927%2C17669870%2C17695671%2C17681301%2C17656204%2C17685682%2C17658944%2C17667344%2C17695789%2C17697669%2C17678001%2C17677814%2C17689214&timeframe=week
@@ -67,8 +67,8 @@ async function requestDribbblePage(q,page,total){
 		console.log("第"+(i+1)+"条数据处理结束");
 	}
 
-	if(page<total){
-		requestDribbblePage(q,page+1,total);
+	if(page>1){
+		requestDribbblePage(q,page-1);
 	}else{
 		//todo merge video
 	}
@@ -104,5 +104,5 @@ async function download(url, fileName){
 }
 
 
-requestDribbblePage(querytype,1,2);
+requestDribbblePage(querytype,9);
 

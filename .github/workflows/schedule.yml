@@ -54,5 +54,5 @@ jobs:
           npm install
       - name: Run
         run:
-          node index.js mobile
+          node index.js mobile-app
         
