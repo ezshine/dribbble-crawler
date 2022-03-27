@@ -227,7 +227,7 @@ async function uploadToUniCloud(filepath,filename,shotid){
 
 	async function step3(){
 		try{
-			res = await fetch(upload, { 
+			res = await fetch(uploadurl, { 
 				method: 'POST', 
 				body: fd ,
 				signal:getTimeoutSignal()
