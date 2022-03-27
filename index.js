@@ -128,7 +128,7 @@ async function postToUniCloud(obj){
 	var res 
 	
 	try{
-		res = await fetch(posturl, { 
+		res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
 			method: 'POST', 
 			body: JSON.stringify({
 				...obj,
@@ -231,7 +231,7 @@ async function uploadToUniCloud(filepath,filename,shotid){
 
 	async function step3(){
 		try{
-			res = await fetch(uploadurl, { 
+			res = await fetch(upload, { 
 				method: 'POST', 
 				body: fd ,
 				signal:getTimeoutSignal()
