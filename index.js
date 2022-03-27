@@ -6,12 +6,10 @@ import File from 'fetch-blob/file.js'
 import { fileFromSync } from 'fetch-blob/from.js'
 import { FormData } from 'formdata-polyfill/esm.min.js'
 
-var [querytype,mode,uploadurl,posturl] = process.argv.slice(2);
+var [querytype,uploadurl,posturl] = process.argv.slice(2);
 if(!querytype)querytype="mobile";
-if(!mode)mode="normal";
 
 console.log("querytype:"+querytype);
-console.log("mode:"+mode);
 
 const imgcompress = 1;
 const imgsize = "840x630";
@@ -91,8 +89,6 @@ async function requestDribbblePage(q,page,total){
 		if(hasVideo){
 			var videourl = $(shotItem).children(".js-thumbnail-base").attr("data-video-teaser-small");//small,medium,large
 			videourl=await uploadToUniCloud(videourl,shotId+"_1.mp4",shotId);
-
-			if(mode==="video")await download(videourl,shotId+"_1.mp4");
 
 			postObj["video"]=videourl;
 		}
