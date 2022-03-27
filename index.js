@@ -6,7 +6,7 @@ import File from 'fetch-blob/file.js'
 import { fileFromSync } from 'fetch-blob/from.js'
 import { FormData } from 'formdata-polyfill/esm.min.js'
 
-var [querytype,mode] = process.argv.slice(2);
+var [querytype,mode,uploadurl,posturl] = process.argv.slice(2);
 if(!querytype)querytype="mobile";
 if(!mode)mode="normal";
 
@@ -128,7 +128,7 @@ async function postToUniCloud(obj){
 	var res 
 	
 	try{
-		res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
+		res = await fetch(posturl, { 
 			method: 'POST', 
 			body: JSON.stringify({
 				...obj,
@@ -149,7 +149,6 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	}
 
 	//step1. 上传至腾讯云云存储
-	//https://ezshine-284162.service.tcloudbase.com/uploadfile
 	console.log("step1. 上传至腾讯云云存储");
 	
 	var fd = new FormData();
@@ -172,7 +171,7 @@ async function uploadToUniCloud(filepath,filename,shotid){
 
 	async function step1(){
 		try{
-			res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
+			res = await fetch(uploadurl, { 
 				method: 'POST', 
 				body: fd ,
 				signal:getTimeoutSignal()
@@ -199,7 +198,7 @@ async function uploadToUniCloud(filepath,filename,shotid){
 	var fileurl;
 	async function step2(){
 		try{
-			res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
+			res = await fetch(posturl, { 
 				method: 'POST', 
 				body: JSON.stringify({
 					action:"transfer",
@@ -232,7 +231,7 @@ async function uploadToUniCloud(filepath,filename,shotid){
 
 	async function step3(){
 		try{
-			res = await fetch('https://ezshine-284162.service.tcloudbase.com/uploadfile', { 
+			res = await fetch(uploadurl, { 
 				method: 'POST', 
 				body: fd ,
 				signal:getTimeoutSignal()
