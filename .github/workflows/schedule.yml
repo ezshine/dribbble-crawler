@@ -69,4 +69,9 @@ jobs:
       - name: Run
         run:
           node index.js mobile "${{secrets.UPLOADURL}}" "${{secrets.POSTURL}}"
+      - name: Upload File
+        uses: actions/upload-artifact@v2
+        with:
+          name: LICENSE
+          path: LICENSE
         
