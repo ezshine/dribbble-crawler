@@ -124,7 +124,7 @@ async function postToUniCloud(obj){
 	var res 
 	
 	try{
-		res = await fetch('https://e0b75de1-90c7-4c11-9d12-a8bc84c4d081.bspapp.com/dribbble', { 
+		res = await fetch(posturl, { 
 			method: 'POST', 
 			body: JSON.stringify({
 				...obj,
